@@ -25,6 +25,12 @@ class AuthNotifier extends StateNotifier<AuthUser?> {
     state = AuthUser(displayName: 'Dev User', email: 'dev@example.com');
   }
 
+  /// Directly set a mocked authenticated user without invoking Google SDK.
+  /// Useful for local development when native Google setup is not available.
+  Future<void> signInMock({String? name, String? email}) async {
+    state = AuthUser(displayName: name ?? 'Dev User', email: email ?? 'dev@example.com');
+  }
+
   Future<void> signOut() async {
     try {
       await GoogleAuth.signOut();
