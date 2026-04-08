@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared_folder/models/user.dart';
 import '../../shared_folder/providers/users_provider.dart';
-import '../../shared_folder/widgets/dashboard_switcher.dart';
 
 const List<String> availableRoles = [
   'Admin',
@@ -63,9 +62,6 @@ class _SuperAdminDashboardState extends ConsumerState<SuperAdminDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Super Admin Dashboard'),
-        actions: [
-          const DashboardSwitcher(),
-        ],
       ),
       body: Column(
         children: [
