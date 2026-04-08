@@ -5,92 +5,9 @@ import 'products.dart';
 import '../../shared_folder/providers/users_provider.dart';
 import '../../shared_folder/providers/categories_provider.dart';
 import '../../shared_folder/providers/products_provider.dart';
-import '../../shared_folder/widgets/dashboard_switcher.dart';
 
 class ManagerDashboard extends ConsumerWidget {
   const ManagerDashboard({super.key});
-
-  void _openDashboard(BuildContext context, DashboardDestination d) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => DashboardSwitcher.screenFor(d)),
-    );
-  }
-
-  Widget _restaurantDrawer(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Drawer(
-      child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    theme.colorScheme.primary.withOpacity(0.18),
-                    theme.colorScheme.secondary.withOpacity(0.12),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary.withOpacity(0.12),
-                    child: Icon(Icons.storefront_rounded, color: theme.colorScheme.primary),
-                  ),
-                  const SizedBox(height: 10),
-                  Text('Restaurant', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 2),
-                  Text('Manager Dashboard', style: theme.textTheme.bodyMedium),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.dashboard_rounded),
-              title: const Text('Dashboard'),
-              onTap: () => Navigator.of(context).pop(),
-            ),
-            ListTile(
-              leading: const Icon(Icons.category_rounded),
-              title: const Text('Categories'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CategoriesPage()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.fastfood_rounded),
-              title: const Text('Products'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProductsPage()));
-              },
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
-              child: Text('Dashboards', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
-            ),
-            ...DashboardSwitcher.items.map(
-              (i) => ListTile(
-                dense: true,
-                leading: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                title: Text(i.$2),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _openDashboard(context, i.$1);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,13 +19,7 @@ class ManagerDashboard extends ConsumerWidget {
     final products = ref.watch(productsProvider);
 
     return Scaffold(
-      drawer: _restaurantDrawer(context),
-      appBar: AppBar(
-        title: const Text('Manager Dashboard'),
-        actions: const [
-          DashboardSwitcher(),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Manager Dashboard')),
       body: Column(
         children: [
           Container(
