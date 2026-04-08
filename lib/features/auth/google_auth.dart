@@ -1,22 +1,26 @@
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuth {
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-  );
+  // Lazily initialize the plugin using the common constructor.
+  // Keep this simple to avoid referencing plugin constructors that
+  // may not exist on every version and cause compile-time errors.
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
   /// Initiates Google sign-in and returns the account on success or null.
   static Future<GoogleSignInAccount?> signIn() async {
     try {
-      final acct = await _googleSignIn.signIn();
-      return acct;
+      // Some plugin versions expose signIn() while others use signInSilently/
+      // signInWithNewAccount; try the common method first.
+      return await _googleSignIn.signIn();
+          return null;
     } catch (e) {
-      // In the starter app we don't crash - just return null
       return null;
     }
   }
 
   static Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {}
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:state_notifier/state_notifier.dart';
 import '../../features/auth/google_auth.dart';
 import '../models/auth_user.dart';
+import '../services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 
 /// AuthNotifier holds a lightweight `AuthUser` instead of a plugin type.
 /// This allows tests and dev environments to mock or fallback when
@@ -12,9 +15,10 @@ class AuthNotifier extends StateNotifier<AuthUser?> {
   /// to a local mocked user so the app flow can continue in dev.
   Future<void> signIn() async {
     try {
-      final acct = await GoogleAuth.signIn();
-      if (acct != null) {
-        state = AuthUser(displayName: acct.displayName ?? acct.email, email: acct.email);
+      // Use Firebase-based sign-in helper
+      final fb_auth.User? user = await AuthService.signInWithGoogle();
+      if (user != null) {
+        state = AuthUser(displayName: user.displayName ?? user.email ?? 'User', email: user.email ?? '');
         return;
       }
     } catch (_) {
@@ -33,7 +37,13 @@ class AuthNotifier extends StateNotifier<AuthUser?> {
 
   Future<void> signOut() async {
     try {
-      await GoogleAuth.signOut();
+      // Sign out Firebase + Google plugin if present
+      try {
+        await fb_auth.FirebaseAuth.instance.signOut();
+      } catch (_) {}
+      try {
+        await GoogleAuth.signOut();
+      } catch (_) {}
     } catch (_) {}
     state = null;
   }

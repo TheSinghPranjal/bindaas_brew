@@ -1,18 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomerHome extends StatelessWidget {
+import '../../shared_folder/providers/table_session_provider.dart';
+import 'qr_scan_page.dart';
+import 'restaurant_menu_screen.dart';
+
+class CustomerHome extends ConsumerStatefulWidget {
   const CustomerHome({super.key});
+
+  @override
+  ConsumerState<CustomerHome> createState() => _CustomerHomeState();
+}
+
+class _CustomerHomeState extends ConsumerState<CustomerHome> {
+  bool _autoFlowStarted = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_autoFlowStarted) return;
+    _autoFlowStarted = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final hasSession = ref.read(tableSessionProvider).currentSession != null;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) =>
+              hasSession ? const RestaurantMenuScreen() : const QrScanPage(),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final session = ref.watch(tableSessionProvider).currentSession;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customer Home'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Customer Home'), centerTitle: true),
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -83,7 +111,9 @@ class CustomerHome extends StatelessWidget {
                         'Scan the QR to join or create a live session for your table.',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.9),
+                          color: theme.textTheme.bodySmall?.color?.withOpacity(
+                            0.9,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -91,10 +121,9 @@ class CustomerHome extends StatelessWidget {
                         width: double.infinity,
                         child: FilledButton.icon(
                           onPressed: () {
-                            // TODO: navigate to QR scan screen
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('QR scan coming soon – wiring in progress.'),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const QrScanPage(),
                               ),
                             );
                           },
@@ -109,12 +138,17 @@ class CustomerHome extends StatelessWidget {
               const Spacer(),
               Text(
                 'Recent activity',
-                style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: colorScheme.surfaceVariant.withOpacity(0.4),
@@ -129,7 +163,9 @@ class CustomerHome extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'You have no active table sessions yet. Scan a QR to get started.',
+                        session == null
+                            ? 'You have no active table sessions yet. Scan a QR to get started.'
+                            : 'Active session found for table ${session.tableNumber}.',
                         style: theme.textTheme.bodySmall,
                       ),
                     ),
