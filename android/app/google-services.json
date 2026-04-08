@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "376229216616",
+    "project_id": "bindaas-brew",
+    "storage_bucket": "bindaas-brew.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376229216616:android:cdbcda8ea3513d87eb16dd",
+        "android_client_info": {
+          "package_name": "com.example.bindaas_brew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376229216616-v8eo8r2pt4ruvp97b9re2btmh91jjtah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb2g6kd4wOdIu0tm1zFe7TmwMBrYCkr1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376229216616-v8eo8r2pt4ruvp97b9re2btmh91jjtah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
